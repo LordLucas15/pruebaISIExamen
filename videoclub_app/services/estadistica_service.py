@@ -1,4 +1,10 @@
-from db import get_connection
+try:
+    # Modo script: ejecutando desde videoclub_app (python main.py)
+    from db import get_connection
+except ImportError:  # pragma: no cover - fallback para modo paquete
+    # Modo paquete: ejecutando como videoclub_app (python -m videoclub_app.app)
+    from ..db import get_connection
+
 from datetime import datetime
 
 
