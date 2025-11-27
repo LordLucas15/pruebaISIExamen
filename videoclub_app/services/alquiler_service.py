@@ -117,3 +117,39 @@ def obtener_alquiler(alquiler_id: int):
         "socio_nombre": row[4],
         "peliculas": (row[5].split(", ") if row[5] else []),
     }
+
+
+def listar_alquileres():
+    """
+    Devuelve una lista de dicts con los alquileres existentes,
+    incluyendo nombre del socio y número de películas.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT
+            a.id,
+            a.fecha_recogida,
+            a.fecha_devolucion,
+            s.nombre AS socio_nombre,
+            COUNT(ap.pelicula_id) AS num_peliculas
+        FROM alquiler a
+        JOIN socio s ON a.socio_id = s.id
+        LEFT JOIN alquiler_pelicula ap ON ap.alquiler_id = a.id
+        GROUP BY a.id, a.fecha_recogida, a.fecha_devolucion, s.nombre
+        ORDER BY a.id DESC
+    """
+    )
+    rows = cur.fetchall()
+    conn.close()
+    return [
+        {
+            "id": r[0],
+            "fecha_recogida": r[1],
+            "fecha_devolucion": r[2],
+            "socio_nombre": r[3],
+            "num_peliculas": r[4],
+        }
+        for r in rows
+    ]

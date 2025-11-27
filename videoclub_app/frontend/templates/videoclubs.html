@@ -9,7 +9,15 @@
       <label>Calle <input type="text" name="calle" required></label>
       <label>Código postal <input type="text" name="codigo_postal" required></label>
     </div>
-    <button class="btn" type="submit">Crear videoclub</button>
+    <button class="btn btn-sm" type="submit">Crear videoclub</button>
+  </form>
+
+  <form method="get" class="card">
+    <label>
+      Buscar videoclub por ciudad, gerente o ID
+      <input type="text" name="q" value="{{ q or '' }}" placeholder="Ej. Valencia o 3">
+    </label>
+    <button class="btn btn-sm" type="submit">Buscar</button>
   </form>
 
   <table>
@@ -28,6 +36,16 @@
       {% endfor %}
     </tbody>
   </table>
+
+  {% if total_pages > 1 %}
+    <nav class="pager" aria-label="Paginación de videoclubs">
+      {% if page > 1 %}
+        <a href="{{ url_for('videoclubs', page=page-1, q=q) }}">« Anterior</a>
+      {% endif %}
+      <span>Página {{ page }} de {{ total_pages }}</span>
+      {% if page < total_pages %}
+        <a href="{{ url_for('videoclubs', page=page+1, q=q) }}">Siguiente »</a>
+      {% endif %}
+    </nav>
+  {% endif %}
 {% endblock %}
-
-

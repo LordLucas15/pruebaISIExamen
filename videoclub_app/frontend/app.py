@@ -27,8 +27,37 @@ def create_app() -> Flask:
                 socio_service.crear_socio(nombre, int(edad))
                 flash("Socio creado correctamente.", "success")
             return redirect(url_for("socios"))
+        q = request.args.get("q", "").strip()
+        page_raw = request.args.get("page", "1")
+        try:
+            page = max(1, int(page_raw))
+        except ValueError:
+            page = 1
+
         socios_list = socio_service.listar_socios()
-        return render_template("socios.html", socios=socios_list)
+        if q:
+            q_lower = q.lower()
+            socios_list = [
+                s
+                for s in socios_list
+                if q_lower in str(s["id"]).lower()
+                or q_lower in s["nombre"].lower()
+            ]
+
+        page_size = 50
+        total = len(socios_list)
+        start = (page - 1) * page_size
+        end = start + page_size
+        socios_page = socios_list[start:end]
+        total_pages = max(1, (total + page_size - 1) // page_size) if total else 1
+
+        return render_template(
+            "socios.html",
+            socios=socios_page,
+            q=q,
+            page=page,
+            total_pages=total_pages,
+        )
 
     @app.route("/videoclubs", methods=["GET", "POST"])
     def videoclubs():
@@ -43,8 +72,38 @@ def create_app() -> Flask:
                 videoclub_service.crear_videoclub(gerente, ciudad, calle, codigo_postal)
                 flash("Videoclub creado correctamente.", "success")
             return redirect(url_for("videoclubs"))
+        q = request.args.get("q", "").strip()
+        page_raw = request.args.get("page", "1")
+        try:
+            page = max(1, int(page_raw))
+        except ValueError:
+            page = 1
+
         lista = videoclub_service.listar_videoclubs()
-        return render_template("videoclubs.html", videoclubs=lista)
+        if q:
+            q_lower = q.lower()
+            lista = [
+                v
+                for v in lista
+                if q_lower in str(v["id"]).lower()
+                or q_lower in v["gerente"].lower()
+                or q_lower in v["ciudad"].lower()
+            ]
+
+        page_size = 50
+        total = len(lista)
+        start = (page - 1) * page_size
+        end = start + page_size
+        videoclubs_page = lista[start:end]
+        total_pages = max(1, (total + page_size - 1) // page_size) if total else 1
+
+        return render_template(
+            "videoclubs.html",
+            videoclubs=videoclubs_page,
+            q=q,
+            page=page,
+            total_pages=total_pages,
+        )
 
     @app.route("/peliculas", methods=["GET", "POST"])
     def peliculas():
@@ -63,9 +122,41 @@ def create_app() -> Flask:
                 except Exception as ex:
                     flash(f"Error al crear película: {ex}", "error")
             return redirect(url_for("peliculas"))
+        q = request.args.get("q", "").strip()
+        page_raw = request.args.get("page", "1")
+        try:
+            page = max(1, int(page_raw))
+        except ValueError:
+            page = 1
+
         videoclubs = videoclub_service.listar_videoclubs()
         peliculas_list = pelicula_service.listar_peliculas_con_videoclub()
-        return render_template("peliculas.html", peliculas=peliculas_list, videoclubs=videoclubs)
+        if q:
+            q_lower = q.lower()
+            peliculas_list = [
+                p
+                for p in peliculas_list
+                if q_lower in str(p["id"]).lower()
+                or q_lower in p["nombre"].lower()
+                or (p["director"] and q_lower in p["director"].lower())
+                or q_lower in p["videoclub_ciudad"].lower()
+            ]
+
+        page_size = 50
+        total = len(peliculas_list)
+        start = (page - 1) * page_size
+        end = start + page_size
+        peliculas_page = peliculas_list[start:end]
+        total_pages = max(1, (total + page_size - 1) // page_size) if total else 1
+
+        return render_template(
+            "peliculas.html",
+            peliculas=peliculas_page,
+            videoclubs=videoclubs,
+            q=q,
+            page=page,
+            total_pages=total_pages,
+        )
 
     @app.route("/alquileres/nuevo", methods=["GET", "POST"])
     def alquiler_nuevo():
@@ -83,7 +174,40 @@ def create_app() -> Flask:
                 return redirect(url_for("alquiler_nuevo"))
         socios_list = socio_service.listar_socios()
         peliculas_list = pelicula_service.listar_peliculas_simple()
-        return render_template("alquiler_nuevo.html", socios=socios_list, peliculas=peliculas_list)
+
+        q = request.args.get("q", "").strip()
+        page_raw = request.args.get("page", "1")
+        try:
+            page = max(1, int(page_raw))
+        except ValueError:
+            page = 1
+
+        alquileres_list = alquiler_service.listar_alquileres()
+        if q:
+            q_lower = q.lower()
+            alquileres_list = [
+                a
+                for a in alquileres_list
+                if q_lower in str(a["id"]).lower()
+                or q_lower in a["socio_nombre"].lower()
+            ]
+
+        page_size = 50
+        total = len(alquileres_list)
+        start = (page - 1) * page_size
+        end = start + page_size
+        alquileres_page = alquileres_list[start:end]
+        total_pages = max(1, (total + page_size - 1) // page_size) if total else 1
+
+        return render_template(
+            "alquiler_nuevo.html",
+            socios=socios_list,
+            peliculas=peliculas_list,
+            alquileres=alquileres_page,
+            q=q,
+            page=page,
+            total_pages=total_pages,
+        )
 
     @app.route("/estadisticas", methods=["GET", "POST"])
     def estadisticas():

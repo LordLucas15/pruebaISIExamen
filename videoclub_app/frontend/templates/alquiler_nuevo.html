@@ -22,8 +22,44 @@
         </select>
       </label>
     </div>
-    <button class="btn" type="submit">Crear alquiler</button>
+    <button class="btn btn-sm" type="submit">Crear alquiler</button>
   </form>
+
+  <h3>Alquileres registrados</h3>
+  <form method="get" class="card">
+    <label>
+      Buscar alquiler por ID o socio
+      <input type="text" name="q" value="{{ q or '' }}" placeholder="Ej. 10 o Laura">
+    </label>
+    <button class="btn btn-sm" type="submit">Buscar</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Socio</th><th>Recogida</th><th>Devolución</th><th>Nº películas</th></tr>
+    </thead>
+    <tbody>
+      {% for a in alquileres %}
+        <tr>
+          <td>{{ a.id }}</td>
+          <td>{{ a.socio_nombre }}</td>
+          <td>{{ a.fecha_recogida }}</td>
+          <td>{{ a.fecha_devolucion }}</td>
+          <td>{{ a.num_peliculas }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if total_pages > 1 %}
+    <nav class="pager" aria-label="Paginación de alquileres">
+      {% if page > 1 %}
+        <a href="{{ url_for('alquiler_nuevo', page=page-1, q=q) }}">« Anterior</a>
+      {% endif %}
+      <span>Página {{ page }} de {{ total_pages }}</span>
+      {% if page < total_pages %}
+        <a href="{{ url_for('alquiler_nuevo', page=page+1, q=q) }}">Siguiente »</a>
+      {% endif %}
+    </nav>
+  {% endif %}
 {% endblock %}
-
-

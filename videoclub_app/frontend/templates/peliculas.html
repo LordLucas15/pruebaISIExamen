@@ -17,7 +17,15 @@
         </select>
       </label>
     </div>
-    <button class="btn" type="submit">Crear película</button>
+    <button class="btn btn-sm" type="submit">Crear película</button>
+  </form>
+
+  <form method="get" class="card">
+    <label>
+      Buscar película por título, director o videoclub
+      <input type="text" name="q" value="{{ q or '' }}" placeholder="Ej. Matrix, Nolan, Valencia…">
+    </label>
+    <button class="btn btn-sm" type="submit">Buscar</button>
   </form>
 
   <table>
@@ -37,6 +45,16 @@
       {% endfor %}
     </tbody>
   </table>
+
+  {% if total_pages > 1 %}
+    <nav class="pager" aria-label="Paginación de películas">
+      {% if page > 1 %}
+        <a href="{{ url_for('peliculas', page=page-1, q=q) }}">« Anterior</a>
+      {% endif %}
+      <span>Página {{ page }} de {{ total_pages }}</span>
+      {% if page < total_pages %}
+        <a href="{{ url_for('peliculas', page=page+1, q=q) }}">Siguiente »</a>
+      {% endif %}
+    </nav>
+  {% endif %}
 {% endblock %}
-
-
