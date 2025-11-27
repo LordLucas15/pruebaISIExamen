@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Nuevo alquiler · Videoclub{% endblock %}
+{% block content %}
+  <h2>Registrar alquiler</h2>
+  <form method="post" class="card">
+    <div class="grid-2">
+      <label>Fecha recogida <input type="date" name="fecha_recogida" required></label>
+      <label>Fecha devolución <input type="date" name="fecha_devolucion" required></label>
+      <label>Socio
+        <select name="socio_id" required>
+          <option value="">— Selecciona —</option>
+          {% for s in socios %}
+            <option value="{{ s.id }}">{{ s.nombre }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Películas (Ctrl/Cmd para multi-selección)
+        <select name="peliculas_ids" multiple size="6" required>
+          {% for p in peliculas %}
+            <option value="{{ p.id }}">{{ p.nombre }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+    <button class="btn" type="submit">Crear alquiler</button>
+  </form>
+{% endblock %}
+
+
+

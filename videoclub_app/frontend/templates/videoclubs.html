@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Videoclubs · Videoclub{% endblock %}
+{% block content %}
+  <h2>Videoclubs</h2>
+  <form method="post" class="card">
+    <div class="grid-2">
+      <label>Gerente <input type="text" name="gerente" required></label>
+      <label>Ciudad <input type="text" name="ciudad" required></label>
+      <label>Calle <input type="text" name="calle" required></label>
+      <label>Código postal <input type="text" name="codigo_postal" required></label>
+    </div>
+    <button class="btn" type="submit">Crear videoclub</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Gerente</th><th>Ciudad</th><th>Calle</th><th>CP</th></tr>
+    </thead>
+    <tbody>
+      {% for v in videoclubs %}
+        <tr>
+          <td>{{ v.id }}</td>
+          <td>{{ v.gerente }}</td>
+          <td>{{ v.ciudad }}</td>
+          <td>{{ v.calle }}</td>
+          <td>{{ v.codigo_postal }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+

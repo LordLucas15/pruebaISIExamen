@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Películas · Videoclub{% endblock %}
+{% block content %}
+  <h2>Películas</h2>
+  <form method="post" class="card">
+    <div class="grid-2">
+      <label>Nombre <input type="text" name="nombre" required></label>
+      <label>Director <input type="text" name="director"></label>
+      <label>Fecha estreno <input type="date" name="fecha_estreno" required></label>
+      <label>Precio (€) <input type="number" name="precio" step="0.01" min="0" required></label>
+      <label>Videoclub
+        <select name="videoclub_id" required>
+          <option value="">— Selecciona —</option>
+          {% for v in videoclubs %}
+            <option value="{{ v.id }}">{{ v.ciudad }} ({{ v.gerente }})</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+    <button class="btn" type="submit">Crear película</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Nombre</th><th>Director</th><th>Estreno</th><th>Precio</th><th>Videoclub</th></tr>
+    </thead>
+    <tbody>
+      {% for p in peliculas %}
+        <tr>
+          <td>{{ p.id }}</td>
+          <td>{{ p.nombre }}</td>
+          <td>{{ p.director or "—" }}</td>
+          <td>{{ p.fecha_estreno }}</td>
+          <td>{{ "%.2f"|format(p.precio) }}</td>
+          <td>{{ p.videoclub_ciudad }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+

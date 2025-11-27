@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Socios · Videoclub{% endblock %}
+{% block content %}
+  <h2>Socios</h2>
+  <form method="post" class="card">
+    <div class="grid-2">
+      <label>
+        Nombre
+        <input type="text" name="nombre" required>
+      </label>
+      <label>
+        Edad
+        <input type="number" name="edad" min="1" required>
+      </label>
+    </div>
+    <button class="btn" type="submit">Crear socio</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Nombre</th><th>Edad</th></tr>
+    </thead>
+    <tbody>
+      {% for s in socios %}
+        <tr>
+          <td>{{ s.id }}</td>
+          <td>{{ s.nombre }}</td>
+          <td>{{ s.edad }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+
+

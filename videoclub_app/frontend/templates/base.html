@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Videoclub{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="container">
+    <h1>Videoclub</h1>
+    <nav>
+      <a href="{{ url_for('index') }}">Inicio</a>
+      <a href="{{ url_for('socios') }}">Socios</a>
+      <a href="{{ url_for('videoclubs') }}">Videoclubs</a>
+      <a href="{{ url_for('peliculas') }}">Películas</a>
+      <a href="{{ url_for('alquiler_nuevo') }}">Nuevo alquiler</a>
+      <a href="{{ url_for('estadisticas') }}">Estadísticas</a>
+    </nav>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-list">
+        {% for category, message in messages %}
+          <li class="flash {{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </header>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="container footer">
+    <small>© Videoclub</small>
+  </footer>
+</body>
+</html>
+
+

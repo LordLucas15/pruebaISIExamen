@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Inicio · Videoclub{% endblock %}
+{% block content %}
+  <section>
+    <h2>Menú</h2>
+    <ul class="menu">
+      <li><a class="btn" href="{{ url_for('socios') }}">Registrar/Listar socios</a></li>
+      <li><a class="btn" href="{{ url_for('videoclubs') }}">Registrar/Listar videoclubs</a></li>
+      <li><a class="btn" href="{{ url_for('peliculas') }}">Registrar/Listar películas</a></li>
+      <li><a class="btn" href="{{ url_for('alquiler_nuevo') }}">Registrar alquiler</a></li>
+      <li><a class="btn" href="{{ url_for('estadisticas') }}">Calcular estadísticas</a></li>
+    </ul>
+  </section>
+{% endblock %}
+
+
+

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Estadísticas · Videoclub{% endblock %}
+{% block content %}
+  <h2>Estadísticas</h2>
+  <form method="post" class="card">
+    <div class="grid-2">
+      <label>Socio
+        <select name="socio_id" required>
+          <option value="">— Selecciona —</option>
+          {% for s in socios %}
+            <option value="{{ s.id }}" {% if socio_sel and (s.id|string) == (socio_sel|string) %}selected{% endif %}>{{ s.nombre }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Mes (YYYY-MM)
+        <input name="mes" type="month" value="{{ mes_sel or '' }}" required>
+      </label>
+    </div>
+    <button class="btn" type="submit">Calcular</button>
+  </form>
+
+  {% if total is not none %}
+    <div class="card">
+      <strong>Total alquilado en {{ mes_sel }}:</strong>
+      <span>{{ "%.2f"|format(total) }} €</span>
+    </div>
+  {% endif %}
+{% endblock %}
+
+
