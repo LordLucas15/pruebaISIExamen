@@ -1,22 +1,24 @@
 from db import init_db
-from services.socio_service import crear_socio
 
 def main():
-    init_db()
+    init_db()   # crea la base de datos si no existe
 
     while True:
+        print("===== MENÚ VIDECLUB =====")
         print("1. Registrar socio")
-        print("2. Salir")
+        print("2. Registrar videoclub")
+        print("3. Registrar película")
+        print("4. Registrar alquiler")
+        print("5. Calcular estadísticas")
+        print("0. Salir")
 
-        opcion = input("Elige una opción: ")
+        opcion = input("Selecciona una opción: ")
 
-        if opcion == "1":
-            nombre = input("Nombre: ")
-            edad = int(input("Edad: "))
-            crear_socio(nombre, edad)
-            print("Socio creado!")
-        elif opcion == "2":
+        if opcion == "0":
+            print("Saliendo...")
             break
+        else:
+            print(f"Opción elegida: {opcion} (función aún no implementada)\n")
 
 if __name__ == "__main__":
     main()
