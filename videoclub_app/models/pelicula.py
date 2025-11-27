@@ -3,6 +3,6 @@ class Pelicula:
         self.id = id
         self.nombre = nombre
         self.director = director
-        self.fecha_estreno = fecha_estreno  # string YYYY-MM-DD
+        self.fecha_estreno = fecha_estreno
         self.precio = precio
         self.videoclub_id = videoclub_id
