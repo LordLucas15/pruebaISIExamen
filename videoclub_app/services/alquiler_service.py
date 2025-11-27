@@ -1,56 +1,65 @@
 from db import get_connection
-from models.alquiler import Alquiler
+from datetime import datetime
 
 def crear_alquiler(fecha_recogida, fecha_devolucion, socio_id, peliculas_ids):
+    # -------------------------
+    # VALIDACIÓN 1: Fechas
+    # -------------------------
+    if fecha_devolucion <= fecha_recogida:
+        raise ValueError("La fecha de devolución debe ser posterior a la fecha de recogida.")
+
+    # Convertir a fecha real para más seguridad
+    try:
+        fecha_rec = datetime.strptime(fecha_recogida, "%Y-%m-%d")
+        fecha_dev = datetime.strptime(fecha_devolucion, "%Y-%m-%d")
+    except:
+        raise ValueError("Formato incorrecto. Usa YYYY-MM-DD.")
+
+    if fecha_dev <= fecha_rec:
+        raise ValueError("La fecha de devolución debe ser posterior a la fecha de recogida.")
+
     conn = get_connection()
     cur = conn.cursor()
 
-    # Crear fila en la tabla alquiler
+    # -------------------------
+    # VALIDACIÓN 2: Película debe haber salido
+    # -------------------------
+    for pid in peliculas_ids:
+        cur.execute("SELECT fecha_estreno FROM pelicula WHERE id = ?", (pid,))
+        row = cur.fetchone()
+        if row is None:
+            conn.close()
+            raise ValueError(f"La película con ID {pid} no existe.")
+
+        fecha_estreno = datetime.strptime(row[0], "%Y-%m-%d")
+
+        if fecha_estreno > fecha_rec:
+            conn.close()
+            raise ValueError(
+                f"No puedes alquilar la película {pid} porque su estreno ({row[0]}) "
+                f"es posterior a la fecha de recogida ({fecha_recogida})."
+            )
+
+    # -------------------------
+    # INSERTAR ALQUILER
+    # -------------------------
     cur.execute("""
         INSERT INTO alquiler (fecha_recogida, fecha_devolucion, socio_id)
         VALUES (?, ?, ?)
     """, (fecha_recogida, fecha_devolucion, socio_id))
 
-    alquiler_id = cur.lastrowid  # ID del alquiler recién creado
+    alquiler_id = cur.lastrowid
 
-    # Registrar alquiler-película (relación N:M)
-    for pelicula_id in peliculas_ids:
+    # -------------------------
+    # INSERTAR RELACIÓN N:M
+    # -------------------------
+    for pid in peliculas_ids:
         cur.execute("""
             INSERT INTO alquiler_pelicula (alquiler_id, pelicula_id)
             VALUES (?, ?)
-        """, (alquiler_id, pelicula_id))
+        """, (alquiler_id, pid))
 
     conn.commit()
     conn.close()
 
     return alquiler_id
-
-
-def obtener_alquiler(alquiler_id):
-    conn = get_connection()
-    cur = conn.cursor()
-
-    # Obtener datos del alquiler
-    cur.execute("SELECT * FROM alquiler WHERE id = ?", (alquiler_id,))
-    alquiler = cur.fetchone()
-
-    if alquiler is None:
-        conn.close()
-        return None
-
-    # Obtener películas asociadas
-    cur.execute("""
-        SELECT pelicula_id FROM alquiler_pelicula
-        WHERE alquiler_id = ?
-    """, (alquiler_id,))
-    peliculas = [row[0] for row in cur.fetchall()]
-
-    conn.close()
-
-    return {
-        "id": alquiler[0],
-        "fecha_recogida": alquiler[1],
-        "fecha_devolucion": alquiler[2],
-        "socio_id": alquiler[3],
-        "peliculas": peliculas
-    }
