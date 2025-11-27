@@ -1,7 +1,31 @@
 {% extends "base.html" %}
 {% block title %}Inicio · Videoclub{% endblock %}
 {% block content %}
-  <section>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="hero-kicker">Gestión sencilla de tu videoclub</p>
+        <h2 id="hero-title" class="hero-title">Organiza socios, videoclubs, películas y alquileres en un solo lugar</h2>
+        <p class="hero-text">
+          Registra nuevos socios, crea videoclubs, añade películas y controla los alquileres con una interfaz clara,
+          accesible y pensada para el día a día.
+        </p>
+        <div class="hero-actions">
+          <a class="btn" href="{{ url_for('socios') }}">Empezar con socios</a>
+          <a class="btn btn-secondary" href="{{ url_for('peliculas') }}">Ver películas</a>
+        </div>
+      </div>
+      <figure class="hero-figure">
+        <img
+          class="hero-image"
+          src="{{ url_for('static', filename='img/hero-videoclub.png') }}"
+          alt="Ilustración moderna de un videoclub y alquiler de películas"
+        >
+      </figure>
+    </div>
+  </section>
+
+  <section aria-label="Menú principal">
     <h2>Menú</h2>
     <ul class="menu">
       <li><a class="btn" href="{{ url_for('socios') }}">Registrar/Listar socios</a></li>
@@ -12,5 +36,3 @@
     </ul>
   </section>
 {% endblock %}
-
-
